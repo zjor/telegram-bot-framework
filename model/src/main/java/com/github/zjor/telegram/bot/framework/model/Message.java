@@ -25,7 +25,7 @@ public class Message extends Born {
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+    private TelegramUser owner;
 
     @Column(name = "text", length = 4096, nullable = true)
     private String text;

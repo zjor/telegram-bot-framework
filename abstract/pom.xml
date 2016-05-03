@@ -16,6 +16,13 @@
     <dependencyManagement>
         <dependencies>
 
+            <!-- TODO: upload to public repo -->
+            <dependency>
+                <groupId>com.github.zjor.telegram</groupId>
+                <artifactId>bot-api</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
             <dependency>
                 <groupId>com.github.jtail</groupId>
                 <artifactId>jpa-utils</artifactId>

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Entity
 @Table(name = "user")
-public class User extends Born {
+public class TelegramUser extends Born {
 
     @Column(name = "telegram_id", nullable = false, unique = true)
     private int telegramId;
