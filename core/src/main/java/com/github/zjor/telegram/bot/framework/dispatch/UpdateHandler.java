@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -59,10 +58,9 @@ public class UpdateHandler {
 
         //TODO: handlers.map(h -> h.handle(context)).filter(not null).first().match(Success.class -> ..., Failure.class -> ....)
         for (MessageHandler handler : handlers) {
-            Optional<Result> resultOpt = handler.handle(context);
-            if (resultOpt.isPresent()) {
-                Result result = resultOpt.get();
-                result.getResult().stream().forEach(this::send);
+            List<SendMessageRequest> responses = handler.handle(context);
+            responses.stream().forEach(this::send);
+            if (!responses.isEmpty()) {
                 return true;
             }
         }

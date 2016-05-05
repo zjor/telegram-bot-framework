@@ -1,9 +1,11 @@
 package com.github.zjor.telegram.bot.framework.dispatch;
 
-import java.util.Optional;
+import com.github.zjor.telegram.bot.api.dto.SendMessageRequest;
+
+import java.util.List;
 
 public interface MessageHandler {
 
-    Optional<Result> handle(MessageContext context) throws HandlingFailedException;
+    List<SendMessageRequest> handle(MessageContext context) throws HandlingFailedException;
 
 }
