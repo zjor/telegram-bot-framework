@@ -5,7 +5,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Main {
     public static void main(String[] args) {
-        ApplicationContext context = new ClassPathXmlApplicationContext("com/github/zjor/telegram/bot/framework/demo/echo/spring-context-*.xml");
+        ApplicationContext context = new ClassPathXmlApplicationContext(
+                "classpath*:com/github/zjor/telegram/bot/framework/**/spring-context-*.xml"
+        );
 
     }
 }
