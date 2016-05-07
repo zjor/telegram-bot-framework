@@ -2,6 +2,11 @@ package com.github.zjor.telegram.bot.framework.dispatch;
 
 import com.github.zjor.telegram.bot.api.Telegram;
 import com.github.zjor.telegram.bot.api.TelegramException;
+import com.github.zjor.telegram.bot.api.dto.AnswerInlineQueryDTO;
+import com.github.zjor.telegram.bot.api.dto.InlineQueryDTO;
+import com.github.zjor.telegram.bot.api.dto.InlineQueryResultArticleDTO;
+import com.github.zjor.telegram.bot.api.dto.InlineQueryResultDTO;
+import com.github.zjor.telegram.bot.api.dto.InputTextMessageContentDTO;
 import com.github.zjor.telegram.bot.api.dto.Message;
 import com.github.zjor.telegram.bot.api.dto.SendMessageRequest;
 import com.github.zjor.telegram.bot.api.dto.Update;
@@ -39,16 +44,38 @@ public class UpdateHandler {
 
     public void handle(Update update) {
         executorService.submit(() -> {
-            Message message = update.getMessage();
-            log.info("<= {}", message);
 
-            try {
-                if (!handleMessage(message)) {
-                    send(defaultMessageHandler.apply(message));
+            Message message = update.getMessage();
+            if (message == null) {
+                InlineQueryDTO iq = update.getInlineQuery();
+                log.info("<= {}", iq);
+
+                InlineQueryResultDTO[] results = new InlineQueryResultDTO[3];
+                for (int i = 0; i<3; i++) {
+                    InlineQueryResultArticleDTO a = new InlineQueryResultArticleDTO();
+                    a.setId("" + i);
+                    a.setTitle("Title #" + i);
+                    InputTextMessageContentDTO text = new InputTextMessageContentDTO("hello world #" + i, null, null);
+                    a.setInputMessageContent(text);
+                    results[i] = a;
                 }
-            } catch (HandlingFailedException e) {
-                log.error("Handling failed: " + e.getMessage(), e);
-                send(defaultErrorHandler.apply(message, e));
+                AnswerInlineQueryDTO res = new AnswerInlineQueryDTO(iq.getId(), results);
+                try {
+                    telegram.answerInlineQuery(res);
+                } catch (TelegramException e) {
+                    log.error("Failed to send message: " + res, e);
+                }
+            } else {
+                log.info("<= {}", message);
+
+                try {
+                    if (!handleMessage(message)) {
+                        send(defaultMessageHandler.apply(message));
+                    }
+                } catch (HandlingFailedException e) {
+                    log.error("Handling failed: " + e.getMessage(), e);
+                    send(defaultErrorHandler.apply(message, e));
+                }
             }
         });
     }
