@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -39,7 +40,7 @@ public class UpdateHandler {
 
     public void handle(final Update update) {
         executorService.submit(() -> {
-            update.getMessage().ifPresent(message -> {
+            Optional.ofNullable(update.getMessage()).ifPresent(message -> {
                 log.info("<= {}", message);
 
                 try {
@@ -49,10 +50,13 @@ public class UpdateHandler {
                 } catch (HandlingFailedException e) {
                     log.error("Handling failed: " + e.getMessage(), e);
                     send(defaultErrorHandler.apply(message, e));
+                } catch (Throwable t) {
+                    log.error("WTF: " + t.getMessage(), t);
                 }
+
             });
             //TODO: support inline queries
-            update.getInlineQuery().ifPresent(inlineQuery -> log.info("inlineQuery: {}", inlineQuery));
+            Optional.ofNullable(update.getInlineQuery()).ifPresent(inlineQuery -> log.info("inlineQuery: {}", inlineQuery));
         });
     }
 
