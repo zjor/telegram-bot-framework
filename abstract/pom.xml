@@ -16,11 +16,10 @@
     <dependencyManagement>
         <dependencies>
 
-            <!-- TODO: upload to public repo -->
             <dependency>
                 <groupId>com.github.zjor.telegram</groupId>
                 <artifactId>bot-api</artifactId>
-                <version>1.2-SNAPSHOT</version>
+                <version>1.2</version>
             </dependency>
 
             <dependency>
