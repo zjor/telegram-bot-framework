@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "user")
+@Table(name = "telegram_user")
 public class TelegramUser extends Born {
 
     @Column(name = "telegram_id", nullable = false, unique = true)

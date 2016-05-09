@@ -40,7 +40,7 @@ public class UserService {
     public long count() {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> q = cb.createQuery(Long.class);
-        q.select(cb.count(q.from(User.class)));
+        q.select(cb.count(q.from(TelegramUser.class)));
         return em.createQuery(q).getSingleResult();
     }
 
