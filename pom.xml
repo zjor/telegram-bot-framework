@@ -18,4 +18,19 @@
         <module>model</module>
     </modules>
 
+    <scm>
+        <connection>scm:git:https://github.com/zjor/telegram-bot-api.git</connection>
+        <developerConnection>scm:git:git@github.com:zjor/telegram-bot-api.git</developerConnection>
+        <url>https://github.com/zjor/telegram-bot-api</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-zjor-maven</id>
+            <name>zjor-maven</name>
+            <url>https://api.bintray.com/maven/zjor/maven/telegram-bot-api/;publish=1</url>
+        </repository>
+    </distributionManagement>
+
 </project>
