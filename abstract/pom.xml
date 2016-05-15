@@ -205,6 +205,14 @@
 
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>bintray-zjor-maven</id>
+            <name>zjor-maven</name>
+            <url>https://api.bintray.com/maven/zjor/maven/telegram-bot-framework/;publish=1</url>
+        </repository>
+    </distributionManagement>
+
     <repositories>
         <repository>
             <id>zjor-bintray</id>
