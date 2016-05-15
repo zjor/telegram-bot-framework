@@ -1,4 +1,4 @@
-package com.github.zjor.telegram.bot.framework.demo.echo.handlers;
+package com.github.zjor.telegram.bot.framework.dispatch;
 
 import com.github.zjor.telegram.bot.api.dto.Message;
 import com.github.zjor.telegram.bot.api.dto.SendMessageRequest;

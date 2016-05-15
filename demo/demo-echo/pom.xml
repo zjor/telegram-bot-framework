@@ -17,7 +17,7 @@
 
         <dependency>
             <groupId>com.github.zjor.telegram.bot.framework</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>telegram-framework-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 

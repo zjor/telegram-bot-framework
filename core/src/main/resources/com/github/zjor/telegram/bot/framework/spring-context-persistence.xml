@@ -11,11 +11,8 @@
 
        <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
               <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
-              <property name="packagesToScan">
-                     <array>
-                            <value>com.github.zjor.**.model</value>
-                     </array>
-              </property>
+              <!--suppress SpringModelInspection -->
+              <property name="packagesToScan" ref="modelPackages"/>
               <!--suppress SpringModelInspection -->
               <property name="dataSource" ref="dataSource">
                      <description>A forward reference to a datasource that must be injected either by standalone or web

@@ -19,7 +19,7 @@
             <dependency>
                 <groupId>com.github.zjor.telegram</groupId>
                 <artifactId>bot-api</artifactId>
-                <version>1.4-SNAPSHOT</version>
+                <version>1.4</version>
             </dependency>
 
             <dependency>
@@ -200,4 +200,12 @@
         </pluginManagement>
 
     </build>
+
+    <repositories>
+        <repository>
+            <id>zjor-bintray</id>
+            <name>zjor BinTray Repo</name>
+            <url>https://dl.bintray.com/zjor/maven/</url>
+        </repository>
+    </repositories>
 </project>

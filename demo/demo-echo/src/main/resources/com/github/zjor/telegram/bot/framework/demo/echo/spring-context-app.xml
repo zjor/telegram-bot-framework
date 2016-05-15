@@ -34,14 +34,6 @@
                             <bean class="com.github.zjor.telegram.bot.framework.demo.echo.handlers.EchoMessageHandler"/>
                      </list>
               </constructor-arg>
-
-              <constructor-arg name="defaultMessageHandler">
-                     <bean class="com.github.zjor.telegram.bot.framework.demo.echo.handlers.DefaultMessageHandler"/>
-              </constructor-arg>
-
-              <constructor-arg name="defaultErrorHandler">
-                     <bean class="com.github.zjor.telegram.bot.framework.demo.echo.handlers.DefaultErrorHandler"/>
-              </constructor-arg>
        </bean>
 
 </beans>

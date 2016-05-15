@@ -9,7 +9,7 @@
         <relativePath>../abstract</relativePath>
     </parent>
 
-    <artifactId>core</artifactId>
+    <artifactId>telegram-framework-core</artifactId>
     <packaging>jar</packaging>
 
     <properties>
@@ -20,7 +20,7 @@
 
         <dependency>
             <groupId>com.github.zjor.telegram.bot.framework</groupId>
-            <artifactId>model</artifactId>
+            <artifactId>telegram-framework-model</artifactId>
             <version>${project.version}</version>
         </dependency>
 

@@ -9,7 +9,7 @@
         <relativePath>../abstract</relativePath>
     </parent>
 
-    <artifactId>model</artifactId>
+    <artifactId>telegram-framework-model</artifactId>
     <packaging>jar</packaging>
 
     <properties>

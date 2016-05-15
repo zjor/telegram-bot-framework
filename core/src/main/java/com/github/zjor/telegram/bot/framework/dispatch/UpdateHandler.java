@@ -28,9 +28,13 @@ public class UpdateHandler {
 
     private List<MessageHandler> handlers;
 
-    private Function<Message, SendMessageRequest> defaultMessageHandler;
+    private Function<Message, SendMessageRequest> defaultMessageHandler = new DefaultMessageHandler();
 
-    private BiFunction<Message, HandlingFailedException, SendMessageRequest> defaultErrorHandler;
+    private BiFunction<Message, HandlingFailedException, SendMessageRequest> defaultErrorHandler = new DefaultErrorHandler();
+
+    public UpdateHandler(List<MessageHandler> handlers) {
+        this.handlers = handlers;
+    }
 
     public UpdateHandler(List<MessageHandler> handlers, Function<Message, SendMessageRequest> defaultMessageHandler, BiFunction<Message, HandlingFailedException, SendMessageRequest> defaultErrorHandler) {
         this.handlers = handlers;
