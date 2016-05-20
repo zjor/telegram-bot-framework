@@ -1,35 +1,30 @@
 package com.github.zjor.telegram.bot.framework.demo.echo.handlers;
 
-import com.github.zjor.telegram.bot.api.dto.SendMessageRequest;
+import com.github.zjor.telegram.bot.api.dto.Message;
+import com.github.zjor.telegram.bot.api.dto.User;
 import com.github.zjor.telegram.bot.framework.demo.echo.Keyboard;
+import com.github.zjor.telegram.bot.framework.dispatch.AbstractMessageHandler;
 import com.github.zjor.telegram.bot.framework.dispatch.HandlingFailedException;
-import com.github.zjor.telegram.bot.framework.dispatch.MessageContext;
-import com.github.zjor.telegram.bot.framework.dispatch.MessageHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.MessageFormat;
-import java.util.Collections;
-import java.util.List;
 
 @Slf4j
-public class StartMessageHandler implements MessageHandler {
+public class StartMessageHandler extends AbstractMessageHandler {
 
     public static final String START_COMMAND = "/start";
     public static final String GREETING_MESSAGE = "Hello {0}! Let's /echo something :)";
 
     @Override
-    public List<SendMessageRequest> handle(MessageContext context) throws HandlingFailedException {
-        String text = context.getCurrentMessage().getText();
+    public boolean handle(Message message) throws HandlingFailedException {
+        String text = message.getText();
         if (StringUtils.isNotEmpty(text) && text.startsWith(START_COMMAND)) {
-            String response = MessageFormat.format(GREETING_MESSAGE, context.getUser().getFirstName());
-
-            SendMessageRequest req = new SendMessageRequest(context.getUser().getTelegramId(), response);
-            req.setReplyMarkup(Keyboard.KEYBOARD);
-
-            return Collections.singletonList(req);
+            User user = message.getFrom();
+            String response = MessageFormat.format(GREETING_MESSAGE, user.getFirstName());
+            replyWithText(user.getId(), response, Keyboard.KEYBOARD);
+            return true;
         }
-
-        return Collections.emptyList();
+        return false;
     }
 }

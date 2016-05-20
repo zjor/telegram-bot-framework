@@ -1,6 +1,7 @@
 package com.github.zjor.telegram.bot.framework.service;
 
 import com.github.jtail.jpa.util.EntityUtils;
+import com.github.zjor.telegram.bot.api.Telegram;
 import com.github.zjor.telegram.bot.framework.model.Born_;
 import com.github.zjor.telegram.bot.framework.model.Message;
 import com.github.zjor.telegram.bot.framework.model.Message_;
@@ -14,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,7 +35,8 @@ public class MessageService {
 
     @Transactional
     public Message create(com.github.zjor.telegram.bot.api.dto.Message message, TelegramUser user) {
-        Message entity = new Message(message.getMessageId(), user, message.getText());
+        String json = Telegram.createGson().toJson(message);
+        Message entity = new Message(message.getMessageId(), user, json);
         entity.setBorn(new Date()); //TODO: use received time
         return EntityUtils.persist(em, entity);
     }
@@ -47,6 +50,14 @@ public class MessageService {
      */
     public List<Message> last(TelegramUser user, int n) {
         return EntityUtils.find(em, Message.class).has(Message_.owner, user).desc(Born_.born).list(n);
+    }
+
+    public com.github.zjor.telegram.bot.api.dto.Message toDto(Message message) {
+        return Telegram.createGson().fromJson(message.getMessage(), com.github.zjor.telegram.bot.api.dto.Message.class);
+    }
+
+    public List<com.github.zjor.telegram.bot.api.dto.Message> toDto(List<Message> ms) {
+        return ms.stream().map(this::toDto).collect(Collectors.toList());
     }
 
 

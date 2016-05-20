@@ -27,7 +27,10 @@ public class Message extends Born {
     @JoinColumn(name = "owner_id", nullable = false)
     private TelegramUser owner;
 
-    @Column(name = "text", length = 4096, nullable = true)
-    private String text;
+    /**
+     * JSON-content of received message
+     */
+    @Column(name = "message", length = 8192, nullable = true)
+    private String message;
 
 }

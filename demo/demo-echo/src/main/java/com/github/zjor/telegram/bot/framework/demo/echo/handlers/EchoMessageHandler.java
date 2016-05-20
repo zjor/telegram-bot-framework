@@ -1,29 +1,25 @@
 package com.github.zjor.telegram.bot.framework.demo.echo.handlers;
 
-import com.github.zjor.telegram.bot.api.dto.SendMessageRequest;
+import com.github.zjor.telegram.bot.api.dto.Message;
+import com.github.zjor.telegram.bot.api.dto.User;
 import com.github.zjor.telegram.bot.framework.demo.echo.Keyboard;
+import com.github.zjor.telegram.bot.framework.dispatch.AbstractMessageHandler;
 import com.github.zjor.telegram.bot.framework.dispatch.HandlingFailedException;
-import com.github.zjor.telegram.bot.framework.dispatch.MessageContext;
-import com.github.zjor.telegram.bot.framework.dispatch.MessageHandler;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Collections;
-import java.util.List;
-
-public class EchoMessageHandler implements MessageHandler {
+public class EchoMessageHandler extends AbstractMessageHandler {
 
     public static final String ECHO_COMMAND = "/echo";
 
     @Override
-    public List<SendMessageRequest> handle(MessageContext context) throws HandlingFailedException {
-        String text = context.getCurrentMessage().getText();
+    public boolean handle(Message message) throws HandlingFailedException {
+        String text = message.getText();
         if (StringUtils.isNoneEmpty(text) && text.startsWith(ECHO_COMMAND)) {
-
-            SendMessageRequest req = new SendMessageRequest(context.getUser().getTelegramId(), text.substring(ECHO_COMMAND.length()).trim());
-            req.setReplyMarkup(Keyboard.KEYBOARD);
-
-            return Collections.singletonList(req);
+            User user = message.getFrom();
+            replyWithText(user.getId(), text.substring(ECHO_COMMAND.length()).trim(), Keyboard.KEYBOARD);
+            return true;
         }
-        return Collections.emptyList();
+
+        return false;
     }
 }

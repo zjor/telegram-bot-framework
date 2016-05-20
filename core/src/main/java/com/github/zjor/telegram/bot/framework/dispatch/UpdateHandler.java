@@ -2,23 +2,28 @@ package com.github.zjor.telegram.bot.framework.dispatch;
 
 import com.github.zjor.telegram.bot.api.Telegram;
 import com.github.zjor.telegram.bot.api.TelegramException;
+import com.github.zjor.telegram.bot.api.dto.InlineQuery;
 import com.github.zjor.telegram.bot.api.dto.Message;
 import com.github.zjor.telegram.bot.api.dto.SendMessageRequest;
 import com.github.zjor.telegram.bot.api.dto.Update;
+import com.github.zjor.telegram.bot.framework.service.MessageService;
+import com.github.zjor.telegram.bot.framework.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
+/**
+ * Applies handlers until first successful handling
+ */
 @Slf4j
 public class UpdateHandler {
-
-    @Inject
-    private ContextResolver contextResolver;
 
     @Inject
     private ExecutorService executorService;
@@ -26,7 +31,15 @@ public class UpdateHandler {
     @Inject
     private Telegram telegram;
 
+    @Inject
+    private UserService userService;
+
+    @Inject
+    private MessageService messageService;
+
     private List<MessageHandler> handlers;
+
+    private Consumer<InlineQuery> inlineQueryHandler;
 
     private Function<Message, SendMessageRequest> defaultMessageHandler = new DefaultMessageHandler();
 
@@ -36,54 +49,49 @@ public class UpdateHandler {
         this.handlers = handlers;
     }
 
-    public UpdateHandler(List<MessageHandler> handlers, Function<Message, SendMessageRequest> defaultMessageHandler, BiFunction<Message, HandlingFailedException, SendMessageRequest> defaultErrorHandler) {
+    public UpdateHandler(List<MessageHandler> handlers, Consumer<InlineQuery> inlineQueryHandler) {
         this.handlers = handlers;
-        this.defaultMessageHandler = defaultMessageHandler;
-        this.defaultErrorHandler = defaultErrorHandler;
+        this.inlineQueryHandler = inlineQueryHandler;
     }
 
     public void handle(final Update update) {
         executorService.submit(() -> {
             Optional.ofNullable(update.getMessage()).ifPresent(message -> {
                 log.info("<= {}", message);
+                messageService.create(message, userService.ensureExists(message.getFrom()));
 
                 try {
-                    if (!handleMessage(message)) {
-                        send(defaultMessageHandler.apply(message));
+                    Iterator<MessageHandler> it = handlers.iterator();
+                    boolean handled = false;
+                    while (it.hasNext() && !handled) {
+                        handled = handled || it.next().handle(message);
+                    }
+                    if (!handled) {
+                        telegram.sendMessage(defaultMessageHandler.apply(message));
                     }
                 } catch (HandlingFailedException e) {
                     log.error("Handling failed: " + e.getMessage(), e);
-                    send(defaultErrorHandler.apply(message, e));
+                    telegram.sendMessage(defaultErrorHandler.apply(message, e));
                 } catch (Throwable t) {
                     log.error("WTF: " + t.getMessage(), t);
                 }
 
             });
-            //TODO: support inline queries
-            Optional.ofNullable(update.getInlineQuery()).ifPresent(inlineQuery -> log.info("inlineQuery: {}", inlineQuery));
+            Optional.ofNullable(update.getInlineQuery()).ifPresent(inlineQuery -> {
+                log.info("inlineQuery: {}", inlineQuery);
+                userService.ensureExists(inlineQuery.getFrom());
+                if (inlineQueryHandler != null) {
+                    inlineQueryHandler.accept(inlineQuery);
+                }
+            });
         });
     }
 
-    private boolean handleMessage(Message message) throws HandlingFailedException {
-        MessageContext context = contextResolver.resolve(message);
-
-        //TODO: handlers.map(h -> h.handle(context)).filter(not null).first().match(Success.class -> ..., Failure.class -> ....)
-        for (MessageHandler handler : handlers) {
-            List<SendMessageRequest> responses = handler.handle(context);
-            responses.stream().forEach(this::send);
-            if (!responses.isEmpty()) {
-                return true;
-            }
-        }
-        return false;
-
-    }
-
-    private void send(SendMessageRequest req) {
+    private void sendSilent(SendMessageRequest req) {
         try {
             telegram.sendMessage(req);
         } catch (TelegramException e) {
-            log.error("Failed to send message: " + req, e);
+            log.error("Sending failed: " + e.getMessage(), e);
         }
     }
 
