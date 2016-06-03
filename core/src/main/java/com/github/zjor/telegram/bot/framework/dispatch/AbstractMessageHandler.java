@@ -2,7 +2,7 @@ package com.github.zjor.telegram.bot.framework.dispatch;
 
 import com.github.zjor.telegram.bot.api.Telegram;
 import com.github.zjor.telegram.bot.api.dto.ReplyKeyboardMarkup;
-import com.github.zjor.telegram.bot.api.dto.SendMessageRequest;
+import com.github.zjor.telegram.bot.api.dto.methods.SendMessage;
 import lombok.AccessLevel;
 import lombok.Getter;
 
@@ -15,17 +15,17 @@ public abstract class AbstractMessageHandler implements MessageHandler {
     private Telegram telegram;
 
     protected void replyWithText(int userId, String text) {
-        telegram.sendMessage(new SendMessageRequest(userId, text));
+        telegram.sendMessage(new SendMessage(userId, text));
     }
 
     protected void replyWithText(int userId, String text, ReplyKeyboardMarkup keyboard) {
-        SendMessageRequest req = new SendMessageRequest(userId, text);
+        SendMessage req = new SendMessage(userId, text);
         req.setReplyMarkup(keyboard);
         telegram.sendMessage(req);
     }
 
     protected void replyWithText(int userId, String text, String parseMode, ReplyKeyboardMarkup keyboard) {
-        SendMessageRequest req = new SendMessageRequest(userId, text, parseMode);
+        SendMessage req = new SendMessage(userId, text, parseMode);
         req.setReplyMarkup(keyboard);
         req.setDisableWebPageView(true);
         telegram.sendMessage(req);

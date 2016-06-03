@@ -4,8 +4,8 @@ import com.github.zjor.telegram.bot.api.Telegram;
 import com.github.zjor.telegram.bot.api.TelegramException;
 import com.github.zjor.telegram.bot.api.dto.InlineQuery;
 import com.github.zjor.telegram.bot.api.dto.Message;
-import com.github.zjor.telegram.bot.api.dto.SendMessageRequest;
 import com.github.zjor.telegram.bot.api.dto.Update;
+import com.github.zjor.telegram.bot.api.dto.methods.SendMessage;
 import com.github.zjor.telegram.bot.framework.service.MessageService;
 import com.github.zjor.telegram.bot.framework.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +41,9 @@ public class UpdateHandler {
 
     private Consumer<InlineQuery> inlineQueryHandler;
 
-    private Function<Message, SendMessageRequest> defaultMessageHandler = new DefaultMessageHandler();
+    private Function<Message, SendMessage> defaultMessageHandler = new DefaultMessageHandler();
 
-    private BiFunction<Message, HandlingFailedException, SendMessageRequest> defaultErrorHandler = new DefaultErrorHandler();
+    private BiFunction<Message, HandlingFailedException, SendMessage> defaultErrorHandler = new DefaultErrorHandler();
 
     public UpdateHandler(List<MessageHandler> handlers) {
         this.handlers = handlers;
@@ -87,7 +87,7 @@ public class UpdateHandler {
         });
     }
 
-    private void sendSilent(SendMessageRequest req) {
+    private void sendSilent(SendMessage req) {
         try {
             telegram.sendMessage(req);
         } catch (TelegramException e) {

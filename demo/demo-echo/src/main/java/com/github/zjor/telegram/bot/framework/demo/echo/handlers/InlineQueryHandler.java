@@ -1,10 +1,10 @@
 package com.github.zjor.telegram.bot.framework.demo.echo.handlers;
 
 import com.github.zjor.telegram.bot.api.Telegram;
-import com.github.zjor.telegram.bot.api.dto.AnswerInlineQuery;
 import com.github.zjor.telegram.bot.api.dto.InlineQuery;
 import com.github.zjor.telegram.bot.api.dto.InlineQueryResultArticle;
 import com.github.zjor.telegram.bot.api.dto.InputTextMessageContent;
+import com.github.zjor.telegram.bot.api.dto.methods.AnswerInlineQuery;
 import com.github.zjor.telegram.bot.framework.service.MessageService;
 import com.github.zjor.telegram.bot.framework.service.UserService;
 import lombok.extern.slf4j.Slf4j;
